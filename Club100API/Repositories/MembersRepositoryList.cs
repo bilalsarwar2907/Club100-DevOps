@@ -22,7 +22,7 @@ namespace Club100API.Repositories
         }
         public IEnumerable<Member> GetAll()
         {
-            return _members;
+            return _members.AsReadOnly();
         }
 
         public IEnumerable<Member> GetMembersByCountAndName(int? minCount, int? maxCount, string? nameFilter)
@@ -76,7 +76,7 @@ namespace Club100API.Repositories
 
         public Member? Update(int id,Member member)
         {
-            var existingMember = GetById(member.Id);
+            var existingMember = GetById(id);
             if (existingMember != null)
             {
                 existingMember.Club = member.Club;
