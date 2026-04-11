@@ -74,7 +74,7 @@ namespace Club100API.Repositories
             return null;
         }
 
-        public Member? Update(Member member)
+        public Member? Update(int id,Member member)
         {
             var existingMember = GetById(member.Id);
             if (existingMember != null)
