@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Club100API/Club100API.csproj" />
+  <Project Path="Club100SeleniumTests/Club100SeleniumTests.csproj" />
+  <Project Path="Club100Tests/Club100Tests.csproj" />
+</Solution>
