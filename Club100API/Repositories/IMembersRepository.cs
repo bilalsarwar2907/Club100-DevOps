@@ -9,6 +9,6 @@ namespace Club100API.Repositories
         IEnumerable<Member> GetAll();
         Member? GetById(int id);
         IEnumerable<Member> GetMembersByCountAndName(int? minCount, int? maxCount, string? nameFilter);
-        Member? Update(Member member);
+        Member? Update(int id,Member member);
     }
 }
