@@ -26,6 +26,7 @@ namespace Club100API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] MemberLoginRequest login)
         {
+            // I do not know why i have to change my login class name i jsmade that class in models
             // 1. Validate the user (In a real scenario, check your database here)
             // Here we use a simple hardcoded check:
             if (login.Username == "admin" && login.Password == "1234")
