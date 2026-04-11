@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Club { get; set; }= string.Empty;
 
-        private string _name;
+        private string _name= string.Empty;
 
         public string Name
         {
@@ -36,5 +36,6 @@
         {
             return $"Id: {Id}, ClubName: {Club}, Name: {Name}, Count: {Count}";
         }
+
     }
 }
