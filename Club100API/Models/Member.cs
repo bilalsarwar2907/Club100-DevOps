@@ -3,7 +3,7 @@
     public class Member
     {
         public int Id { get; set; }
-        public string ClubName { get; set; }= string.Empty;
+        public string Club { get; set; }= string.Empty;
 
         private string _name;
 
@@ -34,7 +34,7 @@
         }
         public override string ToString()
         {
-            return $"Id: {Id}, ClubName: {ClubName}, Name: {Name}, Count: {Count}";
+            return $"Id: {Id}, ClubName: {Club}, Name: {Name}, Count: {Count}";
         }
     }
 }
