@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Members Manager</title>
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css" />
+</head>
+
+<body class="bg-light">
+    <!-- ================================================================= -->
+    <!-- VUE APPLICATION ROOT: #app                                        -->
+    <!-- All Vue.js functionality is contained within this div.           -->
+    <!-- ================================================================= -->
+    <div id="app" class="container my-4">
+
+        <!-- ============================================================= -->
+        <!-- SECTION 1: HEADER                                             -->
+        <!-- ============================================================= -->
+        <div class="mb-4 pb-3 border-bottom d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="h3 text-primary mb-1">👥 Members Manager</h1>
+                <p class="text-muted mb-0">Club100 — Runners who completed 100+ official Marathons</p>
+            </div>
+            <span class="badge bg-primary fs-6">{{ members.length }} members</span>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 2: GET ALL MEMBERS                                    -->
+        <!-- Teacher pattern: Simple button to fetch all items            -->
+        <!-- ============================================================= -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">📋 Get All Members</h5>
+                <button class="btn btn-primary" @click="getAllMembers">
+                    <i class="bi bi-arrow-clockwise"></i> Get All
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 3: GET BY NAME - REST side filter                     -->
+        <!-- Teacher File 1 pattern: getByVendor builds url + calls helper -->
+        <!-- ============================================================= -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">🔍 Get By Name (REST Filter)</h5>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <input v-model="nameToGetBy" class="form-control" placeholder="Enter name to search"
+                            @keyup.enter="getByName(nameToGetBy)" />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" @click="getByName(nameToGetBy)">
+                            <i class="bi bi-search"></i> Get By Name
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" @click="getAllMembers">
+                            <i class="bi bi-x-circle"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 4: CLIENT-SIDE FILTER BY NAME                        -->
+        <!-- Teacher File 2 pattern: filterByTitle — no API call          -->
+        <!-- Uses allMembers array to filter locally                       -->
+        <!-- ============================================================= -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">🔎 Filter By Name (JavaScript)</h5>
+                <p class="text-muted small mb-2">Filters already loaded data — no API call needed</p>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <input v-model="nameFilter" class="form-control" placeholder="Type to filter..."
+                            @input="filterByName(nameFilter)" />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" @click="nameFilter = ''; getAllMembers()">
+                            <i class="bi bi-x-circle"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 5: SORT                                               -->
+        <!-- Teacher File 2 pattern: sortById, sortByTitle, sortByPrice   -->
+        <!-- Client-side sorting of members array                         -->
+        <!-- ============================================================= -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">↕️ Sort Members</h5>
+                <p class="text-muted small mb-2">Client-side sorting — Teacher File 2 pattern</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-primary btn-sm" @click="sortById">
+                        <i class="bi bi-sort-numeric-up"></i> Sort by ID
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" @click="sortByName">
+                        <i class="bi bi-sort-alpha-up"></i> Sort by Name
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" @click="sortByCountAscending">
+                        <i class="bi bi-sort-up"></i> Count ↑
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" @click="sortByCountDescending">
+                        <i class="bi bi-sort-down"></i> Count ↓
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 6: GET BY ID                                          -->
+        <!-- Teacher pattern: get single item by ID with styled result    -->
+        <!-- ============================================================= -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">🔑 Get By ID</h5>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <input v-model.number="idToGetBy" type="number" class="form-control" placeholder="Member ID"
+                            @keyup.enter="getById(idToGetBy)" />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" @click="getById(idToGetBy)">Get By ID</button>
+                    </div>
+                </div>
+                <!-- STYLED SINGLE MEMBER RESULT -->
+                <div class="mt-3" v-if="singleMember">
+                    <div class="alert alert-info mb-0">
+                        <h6 class="alert-heading">Member Found</h6>
+                        <hr>
+                        <p class="mb-1"><strong>ID:</strong> {{ singleMember.id }}</p>
+                        <p class="mb-1"><strong>Name:</strong> {{ singleMember.name }}</p>
+                        <p class="mb-1"><strong>Club:</strong> {{ singleMember.club }}</p>
+                        <p class="mb-0"><strong>Count:</strong> {{ singleMember.count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 7: MEMBERS TABLE                                      -->
+        <!-- Displays array from getAllMembers() or getByName()           -->
+        <!-- ============================================================= -->
+        <div class="card mb-3 shadow-sm" v-if="members.length > 0">
+            <div class="card-body p-0">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Club</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="member in members" :key="member.id">
+                            <td>{{ member.id }}</td>
+                            <td>{{ member.name }}</td>
+                            <td>{{ member.club }}</td>
+                            <td><span class="badge bg-primary">{{ member.count }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="alert alert-warning" v-if="members.length === 0 && !singleMember">
+            No members found. Click "Get All" to load data.
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 8: ADD NEW MEMBER                                     -->
+        <!-- Teacher pattern: simple form + addMember() method            -->
+        <!-- ============================================================= -->
+        <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">➕ Add New Member</h5>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <label class="form-label small">Name</label>
+                        <input v-model="addData.name" class="form-control" placeholder="Min 2 chars" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Club</label>
+                        <input v-model="addData.club" class="form-control" placeholder="Club name" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Count</label>
+                        <input v-model.number="addData.count" type="number" class="form-control"
+                            placeholder="100-199" />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-success w-100" @click="addMember">
+                            <i class="bi bi-plus-circle"></i> Add
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-2" v-if="addMessage">
+                    <span class="badge bg-success">{{ addMessage }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 9: UPDATE EXISTING MEMBER                            -->
+        <!-- Teacher pattern: updateMember() with ID + fields             -->
+        <!-- ============================================================= -->
+        <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">✏️ Update Member</h5>
+                <div class="row g-2">
+                    <div class="col-md-1">
+                        <label class="form-label small">ID</label>
+                        <input v-model.number="updateData.id" type="number" class="form-control" placeholder="ID" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Name</label>
+                        <input v-model="updateData.name" class="form-control" placeholder="Min 2 chars" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Club</label>
+                        <input v-model="updateData.club" class="form-control" placeholder="Club name" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Count</label>
+                        <input v-model.number="updateData.count" type="number" class="form-control"
+                            placeholder="100-199" />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-warning w-100" @click="updateMember">
+                            <i class="bi bi-pencil"></i> Update
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-2" v-if="updateMessage">
+                    <span class="badge bg-warning text-dark">{{ updateMessage }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- SECTION 10: DELETE BY ID                                      -->
+        <!-- Teacher pattern: deleteMember(deleteId)                      -->
+        <!-- ============================================================= -->
+        <div class="card mt-3 mb-5 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">🗑️ Delete by ID</h5>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <label class="form-label small">Member ID</label>
+                        <input v-model.number="deleteId" type="number" class="form-control"
+                            placeholder="ID to delete" />
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn btn-danger w-100" @click="deleteMember(deleteId)">
+                            <i class="bi bi-trash"></i> Delete Member
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-2" v-if="deleteMessage">
+                    <span class="badge bg-danger">{{ deleteMessage }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Vue 3 and Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>

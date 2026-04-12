@@ -34,7 +34,7 @@ namespace Club100API.Controllers
         // [Authorize(Roles = "User, Admin")]
 
         public ActionResult<IEnumerable<Member>> GetMembersByCountAndName(
-            [FromQuery] int minCount,
+            [FromQuery] int? minCount,
             [FromQuery] int? maxCount,
             [FromQuery] string? nameFilter)
         {
