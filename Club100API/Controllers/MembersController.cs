@@ -10,9 +10,9 @@ namespace Club100API.Controllers
     [ApiController]
     public class MembersController : ControllerBase
     {
-        private MembersRepositoryList _repo;
+        private readonly IMembersRepository _repo;
 
-        public MembersController(MembersRepositoryList repo)
+        public MembersController(IMembersRepository repo)
         {
             _repo = repo;
         }

@@ -1,9 +1,11 @@
 ﻿Entity Framework Core (if not done yet):
 
-dotnet add Club100API/Club100API.csproj package Microsoft.EntityFrameworkCore --version 9.0.0
-dotnet add Club100API/Club100API.csproj package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.0
-dotnet add Club100API/Club100API.csproj package Microsoft.EntityFrameworkCore.Tools --version 9.0.0
+dotnet add Club100API/Club100API.csproj package Microsoft.EntityFrameworkCore --version 9.0.4
+dotnet add Club100API/Club100API.csproj package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.4
+dotnet add Club100API/Club100API.csproj package Microsoft.EntityFrameworkCore.Tools --version 9.0.4
+dotnet add Club100API/Club100API.csproj package Microsoft.EntityFrameworkCore.Design --version 9.0.4
 
+dotnet build Club100.slnx
 
 SWAGGER
 dotnet add Club100API/Club100API.csproj package Swashbuckle.AspNetCore --version 6.9.0
@@ -15,5 +17,9 @@ Selenium (if not done yet):
 dotnet add Club100SeleniumTests/Club100SeleniumTests.csproj package Selenium.WebDriver
 dotnet add Club100SeleniumTests/Club100SeleniumTests.csproj package Selenium.Support
 
+dotnet ef migrations add InitialCreate --project Club100API/Club100API.csproj
+dotnet ef database update --project Club100API/Club100API.csproj
+
 Verify everything builds:
 dotnet build Club100.slnx
+
