@@ -21,9 +21,15 @@ namespace Club100API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
+        //public ActionResult<IEnumerable<Member>> GetAll()
+        //{
+        //    return Ok(_repo.GetAll());
+        //}
+
+        [HttpGet]
         public ActionResult<IEnumerable<Member>> GetAll()
         {
-            return Ok(_repo.GetAll());
+            throw new Exception("Saboteur test - deliberate break");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
