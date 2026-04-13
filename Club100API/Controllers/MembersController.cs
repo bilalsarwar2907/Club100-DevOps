@@ -16,17 +16,13 @@ namespace Club100API.Controllers
         {
             _repo = repo;
         }
+
+
         // GET: api/<MembersController>
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpGet]
-        //public ActionResult<IEnumerable<Member>> GetAll()
-        //{
-        //    return Ok(_repo.GetAll());
-        //}
-
-        [HttpGet]
         public ActionResult<IEnumerable<Member>> GetAll()
         {
             throw new Exception("Saboteur test - deliberate break");
