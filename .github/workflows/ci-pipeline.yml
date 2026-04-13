@@ -1,0 +1,72 @@
+name: Club100 CI Pipeline
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # ----------------------------------------
+    # Step 1: Checkout code
+    # ----------------------------------------
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # ----------------------------------------
+    # Step 2: Setup .NET 9
+    # ----------------------------------------
+    - name: Setup .NET 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    # ----------------------------------------
+    # Step 3: Restore dependencies
+    # ----------------------------------------
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # ----------------------------------------
+    # Step 4: Build solution
+    # ----------------------------------------
+    - name: Build
+      run: dotnet build --no-restore
+
+    # ----------------------------------------
+    # Step 5: Run Unit Tests
+    # Fail fast - catches broken code immediately
+    # ----------------------------------------
+    - name: Run Unit Tests
+      run: dotnet test --no-build --verbosity normal
+
+    # ----------------------------------------
+    # Step 6: Start API in background
+    # Uses port 5222 to match Postman collection
+    # ----------------------------------------
+    - name: Start API in background
+      run: dotnet run --project Club100API/Club100API.csproj &
+      env:
+        ASPNETCORE_URLS: http://localhost:5222
+
+    # ----------------------------------------
+    # Step 7: Wait for API to be ready
+    # ----------------------------------------
+    - name: Wait for API to start
+      run: sleep 10
+
+    # ----------------------------------------
+    # Step 8: Install Newman (Postman CLI)
+    # ----------------------------------------
+    - name: Install Newman
+      run: npm install -g newman
+
+    # ----------------------------------------
+    # Step 9: Run Postman integration tests
+    # ----------------------------------------
+    - name: Run Postman Tests
+      run: newman run postman-tests/Club100.postman_collection.json --env-var "baseUrl=http://localhost:5222"
